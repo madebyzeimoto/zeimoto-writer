@@ -19,7 +19,8 @@ final class ContractTest extends PluginTestCase
   public function testInlineWriterPreservesNativeValue(): void
   {
     $app = $this->app();
-    $field = new Field("zeimoto-writer", ["name" => "title", "model" => $app->site(), "value" => "<strong>Hello</strong>"]);
+    $class = Field::resolve("zeimoto-writer");
+    $field = new $class(name: "title", model: $app->site(), value: "<strong>Hello</strong>");
     self::assertTrue($field->inline());
     self::assertStringContainsString("Hello", $field->value());
   }
@@ -34,6 +35,7 @@ final class ContractTest extends PluginTestCase
   {
     $app = $this->app();
     $this->expectException(\Kirby\Exception\InvalidArgumentException::class);
-    new Field("zeimoto-writer", ["name" => "title", "model" => $app->site(), $option => $value]);
+    $class = Field::resolve("zeimoto-writer");
+    new $class(...["name" => "title", "model" => $app->site(), $option => $value]);
   }
 }

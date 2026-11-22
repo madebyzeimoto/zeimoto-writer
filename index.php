@@ -11,39 +11,14 @@
 
 declare(strict_types=1);
 
-$rejectBlockOption = function (string $option): never {
-  throw new \Kirby\Exception\InvalidArgumentException(
-    message: "The zeimoto-writer field is inline-only; `{$option}` only applies to block content. Remove it, or use Kirby's native `writer` field.",
-  );
-};
+use Zeimoto\Writer\WriterField;
+
+load([
+  WriterField::class => "src/WriterField.php",
+], __DIR__);
 
 Kirby::plugin("zeimoto/writer", [
   "fields" => [
-    "zeimoto-writer" => [
-      "extends" => "writer",
-      "props" => [
-        "inline" => function (mixed $inline = true) use ($rejectBlockOption): bool {
-          if ($inline === false) {
-            $rejectBlockOption("inline: false");
-          }
-
-          return true;
-        },
-        "nodes" => function (mixed $nodes = null) use ($rejectBlockOption): null {
-          if ($nodes !== null) {
-            $rejectBlockOption("nodes");
-          }
-
-          return null;
-        },
-        "headings" => function (mixed $headings = null) use ($rejectBlockOption): null {
-          if ($headings !== null) {
-            $rejectBlockOption("headings");
-          }
-
-          return null;
-        },
-      ],
-    ],
+    "zeimoto-writer" => WriterField::class,
   ],
 ]);
